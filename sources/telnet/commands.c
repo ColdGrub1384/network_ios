@@ -84,6 +84,8 @@ __FBSDID("$FreeBSD: src/contrib/telnet/telnet/commands.c,v 1.35 2005/02/28 12:46
 
 #include "ios_error.h"
 
+#import <TargetConditionals.h>
+
 #ifndef       MAXHOSTNAMELEN
 #define       MAXHOSTNAMELEN 256
 #endif
@@ -1358,7 +1360,11 @@ shell(int argc, char *argv[] __unused)
     setcommandmode();
 
     err_ = (TerminalWindowSize(&oldrows, &oldcols) == 0) ? 1 : 0;
+#if TARGET_OS_WATCH || TARGET_OS_TV
+    switch(ios_fork()) {
+#else
     switch(vfork()) {
+#endif
     case -1:
 	perror("Fork failed\n");
 	break;
@@ -1377,10 +1383,12 @@ shell(int argc, char *argv[] __unused)
 		shellname = shellp;
 	    else
 		shellname++;
+        #if !TARGET_OS_WATCH && !TARGET_OS_TV
 	    if (argc > 1)
 		execl(shellp, shellname, "-c", &saveline[1], (char *)0);
 	    else
 		execl(shellp, shellname, (char *)0);
+        #endif
 	    perror("Execl");
 	    _exit(1);
 	}

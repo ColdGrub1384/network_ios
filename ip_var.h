@@ -69,6 +69,7 @@
 #ifndef _NETINET_IP_VAR_H_
 #define	_NETINET_IP_VAR_H_
 #include <sys/appleapiopts.h>
+#import <TargetConditionals.h>
 
 /*
  * Overlay for ip header used by other protocols (tcp, udp).
@@ -83,7 +84,10 @@ struct ipovly {
 
 #define	MAX_IPOPTLEN	40
 
+#if !defined(TARGET_OS_MACCATALYST)
 struct	ipstat {
+#else
+struct  ios_ipstat {
 	u_int32_t ips_total;		/* total packets received */
 	u_int32_t ips_badsum;		/* checksum bad */
 	u_int32_t ips_tooshort;		/* packet too short */
@@ -129,6 +133,7 @@ struct	ipstat {
 	u_int32_t ips_raw_sappend_fail;	/* sock append failed */
 	u_int32_t ips_necp_policy_drop; /* NECP policy related drop */
 };
+#endif
 
 struct ip_linklocal_stat {
 	u_int32_t	iplls_in_total;

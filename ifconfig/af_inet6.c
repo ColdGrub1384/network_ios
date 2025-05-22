@@ -56,7 +56,7 @@
  */
 
 #include <TargetConditionals.h>
-#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+#if TARGET_OS_IPHONE || TARGET_OS_MACCATALYST || TARGET_OS_WATCH || TARGET_OS_TV
 #include "ios_error.h"
 #endif
 
@@ -77,18 +77,14 @@
 
 #include <netinet/in.h>
 #include <net/if_var.h>		/* for struct ifaddr */
-#if !(TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
+#if TARGET_OS_MACCATALYST
 #include <netinet/in_var.h>
+#include <netinet6/nd6.h>
 #endif
 #include <arpa/inet.h>
 #include <netdb.h>
-
-#if !(TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
-#include <netinet6/nd6.h>	/* Define ND6_INFINITE_LIFETIME */
-#else
 #include "netinet6/in6_var.h"
 #include "netinet6/nd6.h"
-#endif
 
 #include "ifconfig.h"
 
